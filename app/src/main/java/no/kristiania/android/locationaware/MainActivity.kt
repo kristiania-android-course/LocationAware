@@ -1,5 +1,7 @@
 package no.kristiania.android.locationaware
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
@@ -7,6 +9,8 @@ import android.os.Bundle
 import android.os.Looper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.android.gms.location.*
 import java.util.*
 
@@ -32,19 +36,59 @@ class MainActivity : AppCompatActivity() {
                 onNewLocation(locationResult.lastLocation)
             }
         }
+        // Check for the permissions
+        if (permissionCheck()) {
+            startLocationUpdates()
+        }
+
         mLocationRequest = createLocationRequest()
     }
 
-    override fun onResume() {
-        super.onResume()
-        startLocationUpdates()
-    }
-
-    override fun onPause() {
-        super.onPause()
+    override fun onDestroy() {
+        super.onDestroy()
         stopLocationUpdates()
     }
 
+    private fun permissionCheck(): Boolean =
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            promptForPermission()
+            false
+        } else {
+            true
+        }
+
+    // Request for permission  show the dialog window to approve the usage of location feature
+    private fun promptForPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            1111
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            1111 -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    startLocationUpdates()
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Sorry, the app cant do anything with out the location permission.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
+
+    // Remember to remove the location update in on destroy method
     private fun stopLocationUpdates() {
         mFusedLocationClient.removeLocationUpdates(mLocationCallback)
     }
@@ -62,10 +106,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    // Use fusedlocation api to get location update in specific time interval
     private fun startLocationUpdates() {
         mFusedLocationClient.requestLocationUpdates(mLocationRequest,
-                mLocationCallback,
-                Looper.getMainLooper())
+            mLocationCallback,
+            Looper.getMainLooper())
     }
 
     /**
