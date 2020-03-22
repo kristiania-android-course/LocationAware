@@ -11,23 +11,63 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+
+
+private val UPDATE_INTERVAL_IN_MILLISECONDS: Long = 10000
+private val FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS: Long = UPDATE_INTERVAL_IN_MILLISECONDS / 2
 
 class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
 
+    private var mMap: GoogleMap? = null
     private lateinit var mapFragment: SupportMapFragment
+
+    /*private lateinit var mLocationRequest: LocationRequest
+    private var mLocationCallback: LocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            super.onLocationResult(locationResult)
+            onNewLocation(locationResult.lastLocation)
+        }
+    }
+    private lateinit var mFusedLocationClient: FusedLocationProviderClient*/
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_frgment_demo)
 
+
         if (permissionCheck()) {
             setMapFragment()
         }
-
     }
+
+    /*private fun initLocationAware() {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        mLocationRequest = createLocationRequest()
+    }*/
+
+    /**
+     * Sets the location request parameters.
+     */
+    /*private fun createLocationRequest() : LocationRequest {
+        return LocationRequest().apply {
+            interval = UPDATE_INTERVAL_IN_MILLISECONDS
+            fastestInterval = FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+    }*/
+
+    /*private fun startLocationUpdates() {
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest,
+            mLocationCallback,
+            Looper.getMainLooper())
+    }*/
+
+    /*private fun stopLocationUpdates() {
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+    }*/
 
     private fun setMapFragment() {
         mapFragment = SupportMapFragment()
@@ -88,17 +128,57 @@ class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
      * installed Google Play services and returned to the app.
      */
 
-    override fun onMapReady(mMap: GoogleMap) {
+    override fun onMapReady(googleMap: GoogleMap) {
         // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
+        this.mMap = googleMap
+        // Turn on the My Location layer and the related control on the map.
+        updateLocationUI();
 
-
-        mMap.addMarker(MarkerOptions().position(sydney).title("Sydney"))
-
-        val cameraPosition =
-            CameraPosition.Builder().target(sydney).zoom(12.0f).build()
-        val cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition)
-
-        mMap.moveCamera(cameraUpdate)
     }
+
+    /*private fun getDeviceLocation() {
+        val locationResult: Task<*> =
+            mFusedLocationClient.lastLocation
+        locationResult.addOnCompleteListener(this) { task ->
+            if (task.isSuccessful) {
+                val mLastKnownLocation : Location = task.result as Location
+                mMap!!.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(
+                            mLastKnownLocation.getLatitude(),
+                            mLastKnownLocation.getLongitude()
+                        ), 13.0f
+                    )
+                )
+            }
+        }
+    }*/
+
+    /*private fun onNewLocation(location: Location) {
+        mMap!!.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                LatLng(
+                    location.latitude,
+                    location.longitude
+                ), 13.0f
+            )
+        )
+    }*/
+
+    private fun updateLocationUI() {
+        mMap?.apply {
+            isMyLocationEnabled = true;
+            uiSettings.isMyLocationButtonEnabled = true;
+
+            moveCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(
+                        59.9112,
+                        10.7449
+                    ), 13.0f
+                )
+            )
+        }
+    }
+
 }
