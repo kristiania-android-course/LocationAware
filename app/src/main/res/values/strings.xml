@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">LocationAware</string>
 
+    google_maps_api.xml
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_first_frag">Hello from First fragment</string>
     <string name="next">Load next fragment</string>
