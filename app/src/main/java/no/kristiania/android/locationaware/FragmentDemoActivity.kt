@@ -24,10 +24,12 @@ class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_frgment_demo)
 
+        // Init Map Fragment
         mapFragment = SupportMapFragment()
-        mapFragment.getMapAsync(this)
+        mapFragment.getMapAsync(this) // Set map ready listener
 
-        if (permissionCheck()) {
+        if (permissionCheck()) { // to check for permission
+            // add map fragment to the frame
             supportFragmentManager.beginTransaction().add(R.id.frame, mapFragment, "map").commit()
         }
 
@@ -65,6 +67,7 @@ class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
         when (requestCode) {
             1111 -> {
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    // open map fragment when the permission is granted
                     supportFragmentManager.beginTransaction().add(R.id.frame, mapFragment, "map")
                         .commit()
                 } else {
@@ -80,8 +83,10 @@ class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         this.mMap = googleMap
+        // to enable my location tracking in the maps
         mMap.isMyLocationEnabled = true
         mMap.uiSettings.isMyLocationButtonEnabled = true
+        // Zoom to a specific location.
         val update = CameraUpdateFactory.newLatLngZoom(LatLng(59.9812, 10.742), 13.0f)
         mMap.moveCamera(update)
 
