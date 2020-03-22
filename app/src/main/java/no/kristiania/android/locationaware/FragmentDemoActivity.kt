@@ -109,9 +109,6 @@ class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-
-        mFusedLocaction
-
     }
 
 }
