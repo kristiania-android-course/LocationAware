@@ -3,26 +3,36 @@ package no.kristiania.android.locationaware
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Looper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 
+
 class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
+
+
+    private lateinit var mFusedLocaction: FusedLocationProviderClient
+
 
 
     private lateinit var mMap: GoogleMap
 
     private lateinit var mapFragment: SupportMapFragment
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_frgment_demo)
+
+        mFusedLocaction = LocationServices.getFusedLocationProviderClient(this)
 
         // Init Map Fragment
         mapFragment = SupportMapFragment()
@@ -86,9 +96,21 @@ class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
         // to enable my location tracking in the maps
         mMap.isMyLocationEnabled = true
         mMap.uiSettings.isMyLocationButtonEnabled = true
-        // Zoom to a specific location.
-        val update = CameraUpdateFactory.newLatLngZoom(LatLng(59.9812, 10.742), 13.0f)
-        mMap.moveCamera(update)
+
+        mFusedLocaction.lastLocation.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val lastLocation = task.result
+                lastLocation?.apply {
+                    // Zoom to a specific location.
+                    val update =
+                        CameraUpdateFactory.newLatLngZoom(LatLng(latitude, longitude), 14.0f)
+                    mMap.moveCamera(update)
+                }
+            }
+        }
+
+
+        mFusedLocaction
 
     }
 
