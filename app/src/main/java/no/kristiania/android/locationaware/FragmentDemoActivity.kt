@@ -1,22 +1,7 @@
 package no.kristiania.android.locationaware
 
-/*import com.google.android.gms.location.*
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng*/
-import android.Manifest
-import android.content.pm.PackageManager
-import android.location.Address
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-
-private val UPDATE_INTERVAL_IN_MILLISECONDS: Long = 10000
-private val FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS: Long = UPDATE_INTERVAL_IN_MILLISECONDS / 2
 
 class FragmentDemoActivity : AppCompatActivity() {
 
@@ -31,53 +16,4 @@ class FragmentDemoActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-
-
-    private fun permissionCheck(): Boolean =
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            promptForPermission()
-            false
-        } else {
-            true
-        }
-
-    // Request for permission  show the dialog window to approve the usage of location feature
-    private fun promptForPermission() {
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-            1111
-        )
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            1111 -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    //setMapFragment()
-                } else {
-                    Toast.makeText(
-                        this,
-                        "Sorry, the app cant do anything with out the location permission.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-        }
-    }
-
-}
-
-fun Address.createStringAddress(): String {
-    val strReturnedAddress = StringBuilder()
-    for (i in 0..maxAddressLineIndex) {
-        strReturnedAddress.append(getAddressLine(i)).append("\n")
-    }
-    return strReturnedAddress.toString()
 }
