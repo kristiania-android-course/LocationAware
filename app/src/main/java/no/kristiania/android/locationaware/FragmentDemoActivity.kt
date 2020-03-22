@@ -2,29 +2,92 @@ package no.kristiania.android.locationaware
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
 import android.os.Bundle
+import android.os.Looper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import java.util.*
+
+private val UPDATE_INTERVAL_IN_MILLISECONDS: Long = 10000
+private val FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS: Long = UPDATE_INTERVAL_IN_MILLISECONDS / 2
 
 class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
 
+
     private var mMap: GoogleMap? = null
     private lateinit var mapFragment: SupportMapFragment
+
+    private lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private val mLocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            super.onLocationResult(locationResult)
+            getAddressFromLocation(locationResult.lastLocation)
+            moveToLocation(
+                LatLng(
+                    locationResult.lastLocation.latitude,
+                    locationResult.lastLocation.longitude
+                )
+            )
+        }
+    }
+    private val mLocationRequest = LocationRequest().apply {
+        interval = UPDATE_INTERVAL_IN_MILLISECONDS
+        fastestInterval = FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS
+        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+    }
+
+    private fun getAddressFromLocation(lastLocation: Location) {
+        // GeoCoder api to ge the address from the location data.
+        val geocoder = Geocoder(this, Locale.getDefault())
+        val addresses = geocoder.getFromLocation(lastLocation.latitude, lastLocation.longitude, 1)
+        val returnedAddress: Address = addresses[0]
+
+        Toast.makeText(
+            this,
+            "${lastLocation.latitude.toString()} and ${lastLocation.longitude} ${returnedAddress.createStringAddress()}",
+            Toast.LENGTH_SHORT
+        ).show()
+
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_frgment_demo)
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if (permissionCheck()) {
             setMapFragment()
+            startLocationUpdates()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopLocationUpdates()
+    }
+
+
+    private fun stopLocationUpdates() {
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+    }
+
+    private fun startLocationUpdates() {
+        mFusedLocationClient.requestLocationUpdates(
+            mLocationRequest,
+            mLocationCallback,
+            Looper.getMainLooper()
+        )
     }
 
 
@@ -92,6 +155,21 @@ class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
 
+        moveToLocation(
+            LatLng(
+                59.9112,
+                10.7449
+            )
+        )
+
+    }
+
+    private fun moveToLocation(latLng: LatLng) {
+        mMap?.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                latLng, 13.0f
+            )
+        )
     }
 
     private fun updateLocationUI() {
@@ -99,15 +177,16 @@ class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
             isMyLocationEnabled = true;
             uiSettings.isMyLocationButtonEnabled = true;
 
-            moveCamera(
-                CameraUpdateFactory.newLatLngZoom(
-                    LatLng(
-                        59.9112,
-                        10.7449
-                    ), 13.0f
-                )
-            )
+
         }
     }
 
+}
+
+fun Address.createStringAddress(): String {
+    val strReturnedAddress = StringBuilder()
+    for (i in 0..maxAddressLineIndex) {
+        strReturnedAddress.append(getAddressLine(i)).append("\n")
+    }
+    return strReturnedAddress.toString()
 }
