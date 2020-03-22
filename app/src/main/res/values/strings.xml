@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">LocationAware</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_first_frag">Hello from First fragment</string>
+    <string name="next">Load next fragment</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_second_fragment">Hello from second fragment</string>
 </resources>
