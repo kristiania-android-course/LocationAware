@@ -19,11 +19,9 @@ class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mapFragment: SupportMapFragment
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_frgment_demo)
-
         if (permissionCheck()) {
             setMapFragment()
         }
