@@ -8,6 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
+/*import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng*/
+
 class FragmentDemoActivity : AppCompatActivity() {
 
 
@@ -16,7 +22,10 @@ class FragmentDemoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_frgment_demo)
 
-
+        // Create supportmapFragment
+        // set async listener
+        // Permission check
+        // load map fragment
     }
 
     override fun onDestroy() {
