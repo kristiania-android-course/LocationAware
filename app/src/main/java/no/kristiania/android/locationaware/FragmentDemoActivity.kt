@@ -30,36 +30,12 @@ class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mapFragment: SupportMapFragment
 
-    private val locationRequest = LocationRequest().apply {
-        interval = 1000
-        fastestInterval = 500
-        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-    }
-
-    private val locationCallback: LocationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            super.onLocationResult(locationResult)
-            updateNewLocation(locationResult.lastLocation)
-        }
-    }
-
-    private fun updateNewLocation(location: Location) {
-        val geocoder: Geocoder = Geocoder(this, Locale.getDefault())
-        val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-        val address = addresses.get(0)
-        val stringBuilder = StringBuilder()
-        for (i in 0..address.maxAddressLineIndex) {
-            stringBuilder.append(address.getAddressLine(i)).append("\n")
-        }
-        Toast.makeText(this, stringBuilder.toString(), Toast.LENGTH_SHORT).show()
-    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_frgment_demo)
 
-        mFusedLocation = LocationServices.getFusedLocationProviderClient(this)
 
         // Init Map Fragment
         mapFragment = SupportMapFragment()
@@ -68,18 +44,13 @@ class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
         if (permissionCheck()) { // to check for permission
             // add map fragment to the frame
             supportFragmentManager.beginTransaction().add(R.id.frame, mapFragment, "map").commit()
-            mFusedLocation.requestLocationUpdates(
-                locationRequest,
-                locationCallback,
-                Looper.getMainLooper()
-            )
         }
 
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mFusedLocation.removeLocationUpdates(locationCallback)
+
     }
 
 
@@ -113,11 +84,7 @@ class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
                     // open map fragment when the permission is granted
                     supportFragmentManager.beginTransaction().add(R.id.frame, mapFragment, "map")
                         .commit()
-                    mFusedLocation.requestLocationUpdates(
-                        locationRequest,
-                        locationCallback,
-                        Looper.getMainLooper()
-                    )
+
                 } else {
                     Toast.makeText(
                         this,
@@ -135,17 +102,6 @@ class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.isMyLocationEnabled = true
         mMap.uiSettings.isMyLocationButtonEnabled = true
 
-        mFusedLocation.lastLocation.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val lastLocation = task.result
-                lastLocation?.apply {
-                    // Zoom to a specific location.
-                    val update =
-                        CameraUpdateFactory.newLatLngZoom(LatLng(latitude, longitude), 14.0f)
-                    mMap.moveCamera(update)
-                }
-            }
-        }
 
     }
 
