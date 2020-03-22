@@ -79,6 +79,7 @@ class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onDestroy() {
         super.onDestroy()
+        mFusedLocation.removeLocationUpdates(locationCallback)
     }
 
 
