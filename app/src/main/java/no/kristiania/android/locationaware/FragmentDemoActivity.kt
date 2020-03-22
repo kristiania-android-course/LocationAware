@@ -13,23 +13,10 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 
-
-private val UPDATE_INTERVAL_IN_MILLISECONDS: Long = 10000
-private val FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS: Long = UPDATE_INTERVAL_IN_MILLISECONDS / 2
-
 class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var mMap: GoogleMap? = null
     private lateinit var mapFragment: SupportMapFragment
-
-    /*private lateinit var mLocationRequest: LocationRequest
-    private var mLocationCallback: LocationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            super.onLocationResult(locationResult)
-            onNewLocation(locationResult.lastLocation)
-        }
-    }
-    private lateinit var mFusedLocationClient: FusedLocationProviderClient*/
 
 
 
@@ -37,37 +24,11 @@ class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_frgment_demo)
 
-
         if (permissionCheck()) {
             setMapFragment()
         }
     }
 
-    /*private fun initLocationAware() {
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        mLocationRequest = createLocationRequest()
-    }*/
-
-    /**
-     * Sets the location request parameters.
-     */
-    /*private fun createLocationRequest() : LocationRequest {
-        return LocationRequest().apply {
-            interval = UPDATE_INTERVAL_IN_MILLISECONDS
-            fastestInterval = FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
-    }*/
-
-    /*private fun startLocationUpdates() {
-        mFusedLocationClient.requestLocationUpdates(mLocationRequest,
-            mLocationCallback,
-            Looper.getMainLooper())
-    }*/
-
-    /*private fun stopLocationUpdates() {
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback)
-    }*/
 
     private fun setMapFragment() {
         mapFragment = SupportMapFragment()
@@ -127,7 +88,6 @@ class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
-
     override fun onMapReady(googleMap: GoogleMap) {
         // Add a marker in Sydney and move the camera
         this.mMap = googleMap
@@ -135,35 +95,6 @@ class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
         updateLocationUI();
 
     }
-
-    /*private fun getDeviceLocation() {
-        val locationResult: Task<*> =
-            mFusedLocationClient.lastLocation
-        locationResult.addOnCompleteListener(this) { task ->
-            if (task.isSuccessful) {
-                val mLastKnownLocation : Location = task.result as Location
-                mMap!!.moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        LatLng(
-                            mLastKnownLocation.getLatitude(),
-                            mLastKnownLocation.getLongitude()
-                        ), 13.0f
-                    )
-                )
-            }
-        }
-    }*/
-
-    /*private fun onNewLocation(location: Location) {
-        mMap!!.moveCamera(
-            CameraUpdateFactory.newLatLngZoom(
-                LatLng(
-                    location.latitude,
-                    location.longitude
-                ), 13.0f
-            )
-        )
-    }*/
 
     private fun updateLocationUI() {
         mMap?.apply {
