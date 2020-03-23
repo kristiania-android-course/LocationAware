@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="no.kristiania.android.locationaware">
 
-    <!--<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -13,9 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!--<meta-data
+        <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCn7oGE4EhZ6MLuLfo4oRsE" />-->
+            android:value="AIzaSyCqZdRWVlllUEu5bkENF5uVhhuf_j3FU3o" />
 
         <activity android:name=".FragmentDemoActivity">
             <intent-filter>

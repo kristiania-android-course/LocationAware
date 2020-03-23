@@ -8,15 +8,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
-/*import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng*/
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
-class FragmentDemoActivity : AppCompatActivity() {
+class FragmentDemoActivity : AppCompatActivity(), OnMapReadyCallback {
 
+    val mapFragment = SupportMapFragment()
 
+    lateinit var mMaps: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +27,11 @@ class FragmentDemoActivity : AppCompatActivity() {
 
         // Create supportmapFragment
         // set async listener
+        mapFragment.getMapAsync(this)
+
+        if (permissionCheck()) {
+            openMaps()
+        }
         // Permission check
         // load map fragment
     }
@@ -60,7 +68,7 @@ class FragmentDemoActivity : AppCompatActivity() {
         when (requestCode) {
             1111 -> {
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-
+                    openMaps()
                 } else {
                     Toast.makeText(
                         this,
@@ -70,6 +78,26 @@ class FragmentDemoActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun openMaps() {
+        supportFragmentManager.beginTransaction()
+            .add(R.id.frame, mapFragment, "map")
+            .commit()
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        this.mMaps = googleMap
+        mMaps.isMyLocationEnabled = true
+        mMaps.uiSettings.isMyLocationButtonEnabled = true
+
+        val marker = MarkerOptions()
+            .position(LatLng(59.92, 10.71))
+            .title("Majorsuen")
+        mMaps.addMarker(marker)
+        val camera = CameraUpdateFactory.newLatLngZoom(LatLng(59.92, 10.71), 14.0f)
+        mMaps.moveCamera(camera)
+
     }
 
 }
