@@ -15,7 +15,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCn7oGMCY8oKkEhZ6MLuLfo4oRsE" />
+            android:value="AIzaSyCqZdRWVlllUEu5bkENF5uVhhuf_j3FU3o" />
 
         <activity android:name=".FragmentDemoActivity">
             <intent-filter>
