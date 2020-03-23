@@ -10,9 +10,10 @@ class FragmentDemoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_frgment_demo)
-
+        val firstFragment = FirstFragment.newInstance("bundle data")
+        FirstFragment()
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.frame, FirstFragment(), "first").commit()
+        transaction.add(R.id.frame, firstFragment, "first").commit()
     }
 
     override fun onDestroy() {

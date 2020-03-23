@@ -21,6 +21,19 @@ import no.kristiania.android.locationaware.R
  */
 class FirstFragment : Fragment() {
 
+    companion object {
+        fun newInstance(string: String): FirstFragment {
+
+            val fragment = FirstFragment()
+            val bundle = Bundle()
+            bundle.putString("a", string)
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
+
+    var stringData: String? = null
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
     }
@@ -31,6 +44,9 @@ class FirstFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_first, viewGroup, false)
+
+        stringData = arguments?.getString("a")
+
         view.next.setOnClickListener {
             fragmentManager?.beginTransaction()
                 ?.replace(R.id.frame, SecondFragment(), "Second")
